@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+uuid64
+SQLAlchemy
+psycopg2-binary
+pydantic[email]
+python-dotenv
+passlib[bcrypt]
+PyJWT
+bcrypt
+pytest
+httpx
+confluent-kafka
+redis
+elasticsearch
+aiohttp
+stripe
