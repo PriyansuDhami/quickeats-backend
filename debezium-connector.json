@@ -1,0 +1,37 @@
+{
+  "name": "quickeats-postgres",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+
+    "database.hostname": "host.docker.internal",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password":"${POSTGRES_PASSWORD}",
+    "database.dbname": "quickeats",
+
+    "topic.prefix": "quickeats",
+    "plugin.name": "pgoutput",
+
+    "slot.name": "quickeats_debezium",
+    "publication.name": "quickeats_publication",
+
+    "table.include.list": "public.outbox",
+
+    "tombstones.on.delete": "false",
+    "include.schema.changes": "false",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schemas.enable": "false",
+
+    "transforms": "outbox",
+
+    "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+
+    "transforms.outbox.route.by.field": "aggregatetype",
+    "transforms.outbox.route.topic.replacement": "events.${routedByValue}",
+
+    "transforms.outbox.table.fields.additional.placement": "type:header:event_type"
+  }
+}

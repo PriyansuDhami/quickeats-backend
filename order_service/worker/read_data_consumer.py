@@ -254,17 +254,20 @@ def start_consumer():
             if message is not None:
                 try:
                     event = json.loads(message.decode("utf-8"))
-                    event_payload = event.get("payload", {})
+                    if isinstance(event, str):
+                    	event = json.loads(event)
+
+                    event_payload = event
 
                     event_id = event_payload.get("event_id")
-                    
+
                     if not event_id:
-                        print("[ORDER SYNC] Received evetn without event_id, skipping...")
+                        print("[ORDER SYNC] Received event without event_id, skipping...")
                         continue
-                    
+
                     if is_duplicate_event(event_id):
                         print(f"[ORDER SYNC] Duplicate event {event_id} detected, skipping...")
-                        continue   
+                        continue
 
                     with SessionLocal() as db:
                         try:
@@ -278,9 +281,10 @@ def start_consumer():
 
                 except json.JSONDecodeError as e:
                     print(f"[ORDER SYNC] Failed to parse JSON: {e}")
-            else:    
-                print("[ORDER SYNC] Received a tombstone or enpty message.")
-    
+
+            else:
+                print("[ORDER SYNC] Received a tombstone or empty message.")
+
     except KeyboardInterrupt:
         pass
 
@@ -288,3 +292,5 @@ def start_consumer():
         consumer.close()
 
 
+if __name__ == "__main__":
+    start_consumer()
